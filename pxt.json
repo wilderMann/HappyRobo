@@ -1,7 +1,7 @@
 {
     "name": "MotionKit",
     "version": "1.0.6",
-    "description": "Block to use the Calliope mini Motion Kit in MakeCode",
+    "description": "Blocks to integrate MotionKit. An extension board that connects two servo motors with the Calliope mini.",
     "license": "MIT",
     "dependencies": {
         "core": "*"
