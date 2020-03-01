@@ -6,6 +6,174 @@ namespace MotionKit {
     const microSecInASecond = 1000000
     let distancePerSec = 100
     let numberOfDegreesPerSec = 200
+    let timeout = 0
+    
+        /* sender or receiver role
+     * false = sender
+     * true = receiver
+     */
+    let btrole = 0
+
+    //flag for initialization
+    let isinitialized = false
+
+    
+    /**
+     * @param PIN Gebe den pin an an dem der Lichtfolger angeschlossen ist, eg: DigitalPin.C18 , DigitalPin.C17
+     */
+    //% blockId=motion_kit_readLightfollower
+    //% block="read light follower on pin | %PIN"
+    export function readLightfollower(PIN: DigitalPin): number {
+        if ((PIN == DigitalPin.C18) || (PIN == DigitalPin.C17)) {
+            if (pins.digitalReadPin(PIN) == 1) {
+                return 1
+            } else {
+                return 0
+            }
+        }
+        return 0
+    }
+    
+    export enum roles{
+	    //% block=sender
+	    sender=0,
+	    //% block=receiver
+	    receiver=1
+    }
+    
+    /**
+     * @param channel Bluetooth channel number, eg: 0 max: 255
+     * @param role , eg: false
+     */
+    //% blockId=motion_kit_remote
+    //% block="initialize mini on channel | %channel | as | %role"
+    export function remote(channel: number, role: roles): void {
+        if (isinitialized) {
+            return
+        }
+        //set channel
+        radio.setGroup(channel)
+        btrole = role
+        isinitialized = true
+    }
+
+    	let x = 0
+	let y = 0
+	let sl = 0
+	let sr = 0
+
+	const hysterese = 10
+
+	radio.onDataPacketReceived(({ receivedString: name, receivedNumber: value }) => {
+	    if ((name == "X") || (name == "Y")) {
+		if (Math.abs(value) > hysterese) {
+		    sl = 0
+		    sr = 0
+
+		    if (name == "X") {
+			if (x == value) {
+			    return
+			}
+			x = value
+		    }
+
+		    if (name == "Y") {
+			if (y == value) {
+			    return
+			}
+			y = value
+		    }
+
+		    if (y < 0) {//FW
+			if (x > 0) {//Q1
+
+			    sl = 90 - (y - x / 2)
+			    sr = 90 + (y + x / 2)
+			} else {//Q2
+
+			    sl = 90 - (y - x / 2)
+			    sr = 90 + (y + x / 2)
+			}
+		    } else {//RW
+			if (x < 0) {//Q3
+
+			    sl = 90 - (y - x / 2)
+			    sr = 90 + (y + x / 2)
+			} else {//Q4
+
+			    sl = 90 - (y - x / 2)
+			    sr = 90 + (y + x / 2)
+			}
+		    }
+
+		    //check limits
+		    if (sl > 180) {
+			sl = 180
+		    }
+		    if (sr > 180) {
+			sr = 180
+		    }
+		    if (sl < 0) {
+			sl = 0
+		    }
+		    if (sr < 0) {
+			sr = 0
+		    }
+
+		    pins.servoWritePin(AnalogPin.C16, sl)
+		    pins.servoWritePin(AnalogPin.C17, sr)
+
+		} else {
+		    //
+		    if (name == "X") {
+			x = 0
+		    }
+		    if (name == "Y") {
+			y = 0
+		    }
+		    if ((y == 0) && (x == 0)) {
+			pins.digitalWritePin(DigitalPin.C16, 0)
+			pins.digitalWritePin(DigitalPin.C17, 0)
+		    }
+		}
+
+
+	    }
+	})
+
+
+    control.inBackground(() => {
+        while (!isinitialized) {
+            //wait for initialization
+		control.waitMicros(1000)
+		timeout += 1
+		if (timeout > 10000) {
+		    return
+		}
+        }
+        //return if initialized as receiver
+        if (btrole) {
+            return
+        }
+        //send xyz values in background
+        while (true) {
+            radio.sendValue("X", pins.map(
+                input.acceleration(Dimension.X),
+                -1024,
+                1023,
+                -90,
+                90
+            ));
+            radio.sendValue("Y", pins.map(
+                input.acceleration(Dimension.Y),
+                -1024,
+                1023,
+                -90,
+                90
+            ));
+            basic.pause(100)
+        }
+    })
 
     /**
      * Drives forwards. Call stop to stop
