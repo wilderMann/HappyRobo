@@ -1,6 +1,6 @@
-# Calliope mini Motion Kit, update to the Kitronik blocks for micro:bit
+# Calliope mini MotionKit, based on the Kitronik blocks
 
-Blocks to support the Calliope mini Motion Kit.
+Blocks to support the MotionKit directly from MakeCode.
 
 ## ServoLite
 
@@ -39,5 +39,5 @@ MIT
 
 
 ```package
-pxt-motion-kit=github:joernalraun/motionkit
+pxt-motion-kit=github:tinysuperlab/motionkit
 ```

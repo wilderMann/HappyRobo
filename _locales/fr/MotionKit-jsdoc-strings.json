@@ -1,0 +1,16 @@
+{
+    "MotionKit.forward" : "Tout droit"
+    "MotionKit.backward" : "Inverse",
+    "MotionKit.left" : "Gauche".
+    "MotionKit.right" : "Right".
+    "MotionKit.stop" : "Stop",
+    "MotionKit.neutral" : "Idle",
+    "MotionKit.driveForwards" : "Avancez d'une distance définie",
+    "MotionKit.driveBackwards" : "Rouler en arrière sur une distance définie",
+    "MotionKit.turnLeft" : "Tournez à gauche selon un angle défini",
+    "MotionKit.turnRight" : "Tournez à droite selon un angle défini",
+    "MotionKit.setDegreesPerSecond" : "Définit la rotation en degrés qui est tournée par seconde",
+    "MotionKit.setDistancePerSecond" : "Définit la distance en mm qui est parcourue par seconde",
+    "MotionKit.readLightfollower" : "Lit le suiveur de lumière et renvoie la valeur 0 ou 1",
+    "MotionKit.remote" : "Règle la liaison radio de la Calliope mini sur un canal de 0 à 255 et définit le rôle d''émetteur' ou de 'récepteur'".
+}

@@ -1,0 +1,16 @@
+{
+	"MotionKit.forward|block": "Recto hacia adelante",
+	"MotionKit.backward|block": "Al revés",
+	"MotionKit.left|block": "Enlaces",
+	"MotionKit.right|block": "Derecho",
+	"MotionKit.stop|block": "Deténgase",
+	"MotionKit.neutral|block": "Velocidad de ralentí",
+	"MotionKit.driveForwards|block": "Una distancia de | %howFar | mm hacia adelante",
+	"MotionKit.driveBackwards|block": "Una distancia de | %howFar | mm hacia adelante",
+	"MotionKit.turnLeft|block": "Por | %deg | grados a la izquierda",
+	"MotionKit.turnRight|block": "Por | %deg | grados a la derecha",
+	"MotionKit.setDegreesPerSecond|block": "Establecer una rotación de  | %DegPerSec | grados por segundo",
+	"MotionKit.setDistancePerSecond|block": "Establece un recorrido de  | %DistPerSec | mm por segundo",
+	"MotionKit.readLightfollower|block": "Leer el seguidor de luz del Pin | %PIN",
+	"MotionKit.remote|block": "Poner la conexión de radio de Calliope mini en el canal | %channel | y como | %role"
+}
