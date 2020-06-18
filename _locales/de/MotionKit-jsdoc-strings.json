@@ -12,5 +12,5 @@
 	"MotionKit.setDegreesPerSecond": "Setzt die Drehung in Grad, die pro sekunde gedreht wird",
 	"MotionKit.setDistancePerSecond": "Setzt die Distanz in mm, die pro sekunde gefahren wird",
 	"MotionKit.readLightfollower": "Liest den Lichtfolger aus und gibt den Wert 0 oder 1 zurück",
-	"MotionKit.remote": "Setzt die Funkverbindung des Calliope mini auf einen Kanal von 0 bis 255 und definiert die Rolle 'Sender' oder 'Empfänger'"
+	"MotionKit.remote": "Setzt die Funkverbindung auf einen Kanal von 0 bis 255 und definiert die Rolle 'Sender' oder 'Empfänger'"
 }
