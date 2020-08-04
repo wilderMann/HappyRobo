@@ -11,6 +11,7 @@
 	"MotionKit.turnRight|block": "Um | %deg | Grad nach rechts",
 	"MotionKit.setDegreesPerSecond|block": "Setze | %DegPerSec | Grad Drehung pro Sekunde",
 	"MotionKit.setDistancePerSecond|block": "Setze | %DistPerSec | mm fahrt pro Sekunde",
-	"MotionKit.readLightfollower|block": "Lese Lichtfolger von Pin | %PIN",
+	"MotionKit.readLightfollower|block": "Lese Lichtfolger an pin | %PIN",
+	"MotionKit.getLightDirection|block": "Licht kommt von | %value",
 	"MotionKit.remote|block": "Funkverbindung auf Kanal | %channel | als | %role"
 }
