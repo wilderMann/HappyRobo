@@ -1,7 +1,7 @@
 {
     "name": "MotionKit",
     "version": "1.0.7",
-    "description": "MakeCode Package for the MotionKit extension set.",
+    "description": "MakeCode package for the MotionKit extension set.",
     "license": "MIT",
     "dependencies": {
         "core": "*"
