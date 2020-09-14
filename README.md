@@ -1,6 +1,6 @@
 # Calliope mini MotionKit, based on the Kitronik blocks
 
-Blocks to support the MotionKit directly from MakeCode.
+Blocks to support the MotionKit directly from MakeCode. Get more info on the MotionKit at: tinysuperlab.com.
 
 ## ServoLite
 
