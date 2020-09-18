@@ -34,7 +34,7 @@ MIT
 
 ## Supported targets
 
-* for PXT/calliope
+* for PXT/calliopemini
 (The metadata above is needed for package search.)
 
 
