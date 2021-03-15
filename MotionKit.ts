@@ -22,7 +22,7 @@ namespace MotionKit {
 
     
     /**
-     * @param PIN Gebe den pin an an dem der Lichtfolger angeschlossen ist, eg: DigitalPin.C18 , DigitalPin.C17
+     * @param PIN Gib den Pin an, an dem die Lichtfolgerplatine angeschlossen ist, z.B.: DigitalPin.C18 , DigitalPin.C17
      */
     //% blockId=motion_kit_readLightfollower
     //% block="read light follower on pin | %PIN"
@@ -47,7 +47,7 @@ namespace MotionKit {
     }
     
     /**
-     * Gebe an auf welche Richtung du reagieren willst links oder rechts
+     * Gib an, wie du auf das Licht reagieren möchtest. Kommt das Licht von links oder rechts?
      * @param value can be Left or Right, eg: Left
      */
     //% blockId=motion_kit_getLightDirection
