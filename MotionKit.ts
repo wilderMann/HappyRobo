@@ -333,7 +333,7 @@ namespace MotionKit {
      * @param degPerSec : How many degrees per second it does.
      */
     //% blockId=motion_kit_set_turn_speed_param
-    //% block="calibrate turn speed to %DegPerSec|degrees per second" 
+    //% block="calibrate turn speed with %DegPerSec| default (300)" 
     export function setDegreesPerSecond(degPerSec: number): void {
         numberOfDegreesPerSec = degPerSec
     }
@@ -344,7 +344,7 @@ namespace MotionKit {
      * @param DegPerSec : How many degrees per second it does.
      */
     //% blockId=motion_kit_set_movement_speed_param 
-    //% block="calibrate forward speed to %DistPerSec|mm per second"
+    //% block="calibrate forward speed with %DistPerSec| (default = 300)"
     export function setDistancePerSecond(distPerSec: number): void {
         distancePerSec = distPerSec
     }
