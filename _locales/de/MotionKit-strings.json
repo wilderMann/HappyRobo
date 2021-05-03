@@ -9,8 +9,8 @@
 	"MotionKit.driveBackwards|block": "Eine Strecke von | %howFar | mm zurück fahren",
 	"MotionKit.turnLeft|block": "Um | %deg | Grad nach links",
 	"MotionKit.turnRight|block": "Um | %deg | Grad nach rechts",
-	"MotionKit.setDegreesPerSecond|block": "Setze | %DegPerSec | Grad Drehung pro Sekunde",
-	"MotionKit.setDistancePerSecond|block": "Setze | %DistPerSec | mm Fahrt pro Sekunde",
+	"MotionKit.setDegreesPerSecond|block": "Eine Drehung mit dem Parameter | %DegPerSec | kalibrieren (Grundwert = 300)",
+	"MotionKit.setDistancePerSecond|block": "Eine Strecke mit dem Parameter | %DistPerSec | kalibrieren (Grundwert = 300)",
 	"MotionKit.readLightfollower|block": "Lese Lichtfolger an pin | %PIN",
 	"MotionKit.getLightDirection|block": "Licht kommt von | %value",
 	"MotionKit.remote|block": "Funkverbindung auf Kanal | %channel | als | %role"
