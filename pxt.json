@@ -9,8 +9,7 @@
     },
     "files": [
         "README.md",
-        "MotionKit.ts",
-        "mcp23017.ts",
+        "HappyRobo.ts",
         "_locales/de/MotionKit-strings.json",
         "_locales/de/MotionKit-jsdoc-strings.json"
     ],
