@@ -10,8 +10,8 @@
     "files": [
         "README.md",
         "HappyRobo.ts",
-        "_locales/de/MotionKit-strings.json",
-        "_locales/de/MotionKit-jsdoc-strings.json"
+        "_locales/de/HappyRobo-strings.json",
+        "_locales/de/HappyRobo-jsdoc-strings.json"
     ],
     "testFiles": [
         "tests.ts"
