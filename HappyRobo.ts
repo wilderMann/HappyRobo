@@ -189,7 +189,7 @@ namespace HappyRobo {
     }
 
     export function ReadNotAnd(addr: ADDRESS, reg: REG_MCP, value: number): boolean {
-        return (!(MCP23017.readRegister(addr, reg) & value))
+        return (!(HappyRobo.readRegister(addr, reg) & value))
     }
 
     export function readRegister(addr: ADDRESS, reg: REG_MCP): number {
@@ -197,45 +197,6 @@ namespace HappyRobo {
         return pins.i2cReadNumber(addr, NumberFormat.Int8LE)
     }
 
-    
-    /**
-     * @param PIN Gib den Pin an, an dem die Lichtfolgerplatine angeschlossen ist, z.B.: DigitalPin.C18 , DigitalPin.C17
-     */
-    //% blockId=motion_kit_readLightfollower
-    //% block="read light follower on pin | %PIN"
-    export function readLightfollower(PIN: DigitalPin): number {
-        lfpin = PIN
-        if ((PIN == DigitalPin.C18) || (PIN == DigitalPin.C17)) {
-            if (pins.digitalReadPin(PIN) == 1) {
-                return 1
-            } else {
-                return 0
-            }
-        }
-        return 0
-    }
-
-
-    export enum side {
-        //% block="links"
-        Left = 0,
-        //% block="rechts"
-        Right = 1
-    }
-    
-    /**
-     * Gib an, wie du auf das Licht reagieren möchtest. Kommt das Licht von links oder rechts?
-     * @param value can be Left or Right, eg: Left
-     */
-    //% blockId=motion_kit_getLightDirection
-    //% block="light direction is | %value"
-    export function getLightDirection(value: side): boolean {
-        if (pins.digitalReadPin(lfpin) == value) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     
     export enum roles{
@@ -251,6 +212,7 @@ namespace HappyRobo {
      */
     //% blockId=motion_kit_remote
     //% block="initialize mini on channel | %channel | as | %role"
+    //% group="Kommunikation"
     export function remote(channel: number, role: roles): void {
         if (isinitialized) {
             return
@@ -384,6 +346,7 @@ namespace HappyRobo {
      */
     //% blockId=motion_kit_servos_forward
     //% block="drive forward"
+    //% group="Bewegung"
     export function forward(): void {
         pins.servoWritePin(AnalogPin.C16, 0);
         pins.servoWritePin(AnalogPin.C17, 180);
@@ -394,6 +357,7 @@ namespace HappyRobo {
      */
     //% blockId=motion_kit_servos_backward
     //% block="drive backward"
+    //% group="Bewegung"
     export function backward(): void {
         pins.servoWritePin(AnalogPin.C16, 180);
         pins.servoWritePin(AnalogPin.C17, 0);
@@ -404,6 +368,7 @@ namespace HappyRobo {
 	*/
     //% blockId=motion_kit_servos_left
     //% block="turn left"
+    //% group="Bewegung"
     export function left(): void {
         pins.servoWritePin(AnalogPin.C16, 0);
         pins.servoWritePin(AnalogPin.C17, 0);
@@ -414,6 +379,7 @@ namespace HappyRobo {
 	 */
     //% blockId=motion_kit_servos_right
     //% block="turn right"
+    //% group="Bewegung"
     export function right(): void {
         pins.servoWritePin(AnalogPin.C16, 180);
         pins.servoWritePin(AnalogPin.C17, 180);
@@ -428,6 +394,7 @@ namespace HappyRobo {
      */
     //% blockId=motion_kit_servos_stop
     //% block="stop"
+    //% group="Bewegung"
     export function stop(): void {
         pins.analogWritePin(AnalogPin.C16, 0);
         pins.analogWritePin(AnalogPin.C17, 0);
@@ -439,6 +406,7 @@ namespace HappyRobo {
      */
     //% blockId=motion_kit_servos_neutral
     //% block="goto neutral position"
+    //% group="Bewegung"
     export function neutral(): void {
         pins.servoWritePin(AnalogPin.C16, 90);
         pins.servoWritePin(AnalogPin.C17, 90);
@@ -450,6 +418,7 @@ namespace HappyRobo {
      */
     //% blockId=motion_kit_drive_forwards
     //% block="drive forwards %howFar|distance" 
+    //% group="Bewegung"
     export function driveForwards(howFar: number): void {
         let timeToWait = (howFar * microSecInASecond) / distancePerSec; // calculation done this way round to avoid zero rounding
         forward();
@@ -463,6 +432,7 @@ namespace HappyRobo {
      */
     //% blockId=motion_kit_drive_backwards
     //% block="drive backwards %howFar|distance" 
+    //% group="Bewegung"
     export function driveBackwards(howFar: number): void {
         let timeToWait = (howFar * microSecInASecond) / distancePerSec; // calculation done this way round to avoid zero rounding
         backward();
@@ -479,6 +449,7 @@ namespace HappyRobo {
      */
     //% blockId=motion_kit_turn_right
     //% block="turn right %deg|degrees"
+    //% group="Bewegung"
     export function turnRight(deg: number): void {
         let timeToWait = (deg * microSecInASecond) / numberOfDegreesPerSec;// calculation done this way round to avoid zero rounding
         pins.servoWritePin(AnalogPin.C16, 130);
@@ -496,6 +467,7 @@ namespace HappyRobo {
     */
     //% blockId=motion_kit_turn_left
     //% block="turn left %deg|degrees"
+    //% group="Bewegung"
     export function turnLeft(deg: number): void {
         let timeToWait = (deg * microSecInASecond) / numberOfDegreesPerSec;// calculation done this way round to avoid zero rounding
         pins.servoWritePin(AnalogPin.C16, 50);
@@ -511,6 +483,7 @@ namespace HappyRobo {
      */
     //% blockId=motion_kit_set_turn_speed_param
     //% block="calibrate turn speed with %DegPerSec| default (300)" 
+    //% group="Bewegung"
     export function setDegreesPerSecond(degPerSec: number): void {
         numberOfDegreesPerSec = degPerSec
     }
@@ -522,6 +495,7 @@ namespace HappyRobo {
      */
     //% blockId=motion_kit_set_movement_speed_param 
     //% block="calibrate forward speed with %DistPerSec| (default = 300)"
+    //% group="Bewegung"
     export function setDistancePerSecond(distPerSec: number): void {
         distancePerSec = distPerSec
     }
