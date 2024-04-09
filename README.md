@@ -1,32 +1,15 @@
-# Calliope mini MotionKit, based on the Kitronik blocks
+# Calliope mini HappyRobo, based on the MotionKit
 
-Blocks to support the MotionKit directly from MakeCode. Get more info on the MotionKit at: tinysuperlab.com.
+Blocks to support the HappyRobo directly from MakeCode.
 
-## ServoLite
+## Als Erweiterung verwenden
 
-* turn around
+Dieses Repository kann als **Erweiterung** in MakeCode hinzugefügt werden.
 
-```blocks
-input.onButtonPressed(Button.A, () => {
-    motion_kit.turnRight(90);
-})
-```
-
-* go forward
-
-```blocks
-input.onButtonPressed(Button.B, () => {
-    motion_kit.driveForwards(10);
-})
-```
-
-* stop both motors when pressing ``A+B``
-
-```blocks
-input.onButtonPressed(Button.AB, () => {
-    motion_kit.stop();
-})
-```
+* öffne [https://makecode.calliope.cc/](https://makecode.calliope.cc/)
+* klicke auf **Neues Projekt**
+* klicke auf **Erweiterungen** unter dem Zahnrad-Menü
+* nach **[https://github.com/wilderMann/HappyRobo/](https://github.com/wilderMann/HappyRobo/)** suchen und importieren
 
 ## License
 
