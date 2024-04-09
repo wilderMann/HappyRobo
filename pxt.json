@@ -1,7 +1,7 @@
 {
-    "name": "MotionKit",
-    "version": "1.0.7",
-    "description": "MakeCode package for the MotionKit extension set.",
+    "name": "HappyRobo",
+    "version": "1.0.0",
+    "description": "MakeCode package for the HappyRobo.",
     "license": "MIT",
     "dependencies": {
         "core": "*",
@@ -10,6 +10,7 @@
     "files": [
         "README.md",
         "MotionKit.ts",
+        "mcp23017.ts",
         "_locales/de/MotionKit-strings.json",
         "_locales/de/MotionKit-jsdoc-strings.json"
     ],
