@@ -54,7 +54,7 @@ let BitwertB = 0x00;
 let IOBitsA = 0x00;
 let IOBitsB = 0x00;
 
-//% weight=100 color=#00A654 icon="\uf1b9" block="MotionKit"
+//% weight=100 color=#00A654 icon="\uf1b9" block="HappyRobo"
 namespace HappyRobo {
 
 	
@@ -75,6 +75,127 @@ namespace HappyRobo {
 
     //light follower pin
     let lfpin = DigitalPin.C18
+
+	/**
+    * There is no need to define a port as output. They are predefined.
+    **/
+    //% blockId="initMCP23017LED"
+    //% block="set %port as output"    
+    //% block.loc.de="setze %port als Ausgang" 
+    //% jsdoc.loc.de="Ausgänge müssen eigentlich garnicht definiert werden sondern sind voreingestellt!"
+    //% port.fieldEditor="gridpicker" port.fieldOptions.columns=4
+    //% weight=80
+    //% group="Beim Start"
+    export function initMCP23017LED(port: Ports): void {
+        let name:number=port;
+         if (name > 0 && name < 9) { // Register A Bit des Ports auf 0 setzen
+            IOBitsA = (IOBitsA & (BITS.Alle-(BITS.Bit1 << name - 1)))
+            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_A, IOBitsA)
+        } else { // Register B
+            name = name - 8
+            IOBitsB = (IOBitsB & (BITS.Alle-(BITS.Bit1 << name - 1)))
+            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_B, IOBitsB)
+        }
+        
+    }
+
+    //% blockId="initMCP23017Button"
+    //% block="set %port as input"
+    //% block.loc.de="setze %port als Eingang"  
+    //% port.fieldEditor="gridpicker" port.fieldOptions.columns=4
+    //% weight=80
+    //% group="Beim Start"
+    export function initMCP23017Button(port: Ports): void {
+       let name:number=port;
+         if (name > 0 && name < 9) { // Register A Bit des Ports auf 1 setzen
+            IOBitsA = (IOBitsA | (BITS.Bit1 << name - 1))
+            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_A, IOBitsA)
+            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.PullUp_Widerstaende_A, IOBitsA)
+        } else { // Register B
+            name = name - 8
+            IOBitsB = (IOBitsB | (BITS.Bit1 << name - 1))
+            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_B, IOBitsB)
+            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.PullUp_Widerstaende_B, IOBitsB)
+        }
+    }
+
+    /**
+     * Returns ´true´ when the port is connected to ground.
+     * The port of the MCP23017 must be set as input.
+     */
+    //% blockId="MCPButtonPressed"
+    //% block="Input %port closed"
+    //% block.loc.de="Eingang %port geschlossen"
+    //% jsdoc.loc.de="Gibt ´wahr´ zurück wenn der Eingang mit GND verbunden wurde, der Port des MCP23017 muss als Eingang festgelegt sein."
+    //% port.fieldEditor="gridpicker" port.fieldOptions.columns=4
+    //% weight=87
+    //% group="Ein- & Ausgang"
+    export function MCPButtonPressed(port: Ports): boolean {
+        let name:number=port;
+        let ergebnis:boolean=false;
+        if (name > 0 && name < 9) { // Register A
+            if (MCP23017.ReadNotAnd(ADDRESS.A20, REG_MCP.Bitmuster_A, (BITS.Bit1 << name - 1))) {
+                ergebnis=true;
+                } 
+        } else { // Register B
+                name = name - 8
+                if (MCP23017.ReadNotAnd(ADDRESS.A20, REG_MCP.Bitmuster_B, (BITS.Bit1 << name - 1))) {
+                ergebnis=true;
+                } 
+        }
+        return ergebnis;
+    }
+
+    //% blockId="setLed"
+    //% block="switch %port | %zustand"
+    //% block.loc.de="schalte %port | %zustand"
+    //% zustand.shadow="toggleOnOff"
+    //% port.fieldEditor="gridpicker" port.fieldOptions.columns=4
+    //% weight=88
+    //% group="Ein- & Ausgang"
+
+    export function setLed(port: Ports, zustand: boolean): void {
+        let name:number=port
+        if (zustand) { //LEDs an
+            if (name > 0 && name < 9) { // Register A
+                // Bitweises oder
+                BitwertA = BitwertA | (BITS.Bit1 << name - 1)
+                MCP23017.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_A, BitwertA);
+            } else { // Register B
+                name = name - 8
+                BitwertB = BitwertB | (BITS.Bit1 << name - 1)
+                MCP23017.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_B, BitwertB);
+            }
+        } else { //   LEDs aus
+            if (name > 0 && name < 9) { // Register A
+                // Ist das betreffende Bit gesetzt? Dann löschen
+                if ((BitwertA & (BITS.Bit1 << name - 1)) == (BITS.Bit1 << name - 1)) {
+                    // Bitweises XOR ^
+                    BitwertA = BitwertA ^ (BITS.Bit1 << name - 1)
+                    MCP23017.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_A, BitwertA);
+                }
+            } else { // Register B
+                name = name - 8
+                if ((BitwertB & (BITS.Bit1 << name - 1)) == (BITS.Bit1 << name - 1)) {
+                    BitwertB = BitwertB ^ (BITS.Bit1 << name - 1)
+                    MCP23017.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_B, BitwertB);
+                }
+            }
+        }
+    }
+
+    export function writeRegister(addr: ADDRESS, reg: REG_MCP, value: number) {
+        pins.i2cWriteNumber(addr, reg * 256 + value, NumberFormat.UInt16BE)
+    }
+
+    export function ReadNotAnd(addr: ADDRESS, reg: REG_MCP, value: number): boolean {
+        return (!(MCP23017.readRegister(addr, reg) & value))
+    }
+
+    export function readRegister(addr: ADDRESS, reg: REG_MCP): number {
+        pins.i2cWriteNumber(addr, reg, NumberFormat.Int8LE);
+        return pins.i2cReadNumber(addr, NumberFormat.Int8LE)
+    }
 
     
     /**
@@ -405,124 +526,5 @@ namespace HappyRobo {
         distancePerSec = distPerSec
     }
     
-    /**
-    * There is no need to define a port as output. They are predefined.
-    **/
-    //% blockId="initMCP23017LED"
-    //% block="set %port as output"    
-    //% block.loc.de="setze %port als Ausgang" 
-    //% jsdoc.loc.de="Ausgänge müssen eigentlich garnicht definiert werden sondern sind voreingestellt!"
-    //% port.fieldEditor="gridpicker" port.fieldOptions.columns=4
-    //% weight=80
-    //% group="Beim Start"
-    export function initMCP23017LED(port: Ports): void {
-        let name:number=port;
-         if (name > 0 && name < 9) { // Register A Bit des Ports auf 0 setzen
-            IOBitsA = (IOBitsA & (BITS.Alle-(BITS.Bit1 << name - 1)))
-            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_A, IOBitsA)
-        } else { // Register B
-            name = name - 8
-            IOBitsB = (IOBitsB & (BITS.Alle-(BITS.Bit1 << name - 1)))
-            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_B, IOBitsB)
-        }
-        
-    }
-
-    //% blockId="initMCP23017Button"
-    //% block="set %port as input"
-    //% block.loc.de="setze %port als Eingang"  
-    //% port.fieldEditor="gridpicker" port.fieldOptions.columns=4
-    //% weight=80
-    //% group="Beim Start"
-    export function initMCP23017Button(port: Ports): void {
-       let name:number=port;
-         if (name > 0 && name < 9) { // Register A Bit des Ports auf 1 setzen
-            IOBitsA = (IOBitsA | (BITS.Bit1 << name - 1))
-            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_A, IOBitsA)
-            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.PullUp_Widerstaende_A, IOBitsA)
-        } else { // Register B
-            name = name - 8
-            IOBitsB = (IOBitsB | (BITS.Bit1 << name - 1))
-            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_B, IOBitsB)
-            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.PullUp_Widerstaende_B, IOBitsB)
-        }
-    }
-
-    /**
-     * Returns ´true´ when the port is connected to ground.
-     * The port of the MCP23017 must be set as input.
-     */
-    //% blockId="MCPButtonPressed"
-    //% block="Input %port closed"
-    //% block.loc.de="Eingang %port geschlossen"
-    //% jsdoc.loc.de="Gibt ´wahr´ zurück wenn der Eingang mit GND verbunden wurde, der Port des MCP23017 muss als Eingang festgelegt sein."
-    //% port.fieldEditor="gridpicker" port.fieldOptions.columns=4
-    //% weight=87
-    //% group="Ein- & Ausgang"
-    export function MCPButtonPressed(port: Ports): boolean {
-        let name:number=port;
-        let ergebnis:boolean=false;
-        if (name > 0 && name < 9) { // Register A
-            if (MCP23017.ReadNotAnd(ADDRESS.A20, REG_MCP.Bitmuster_A, (BITS.Bit1 << name - 1))) {
-                ergebnis=true;
-                } 
-        } else { // Register B
-                name = name - 8
-                if (MCP23017.ReadNotAnd(ADDRESS.A20, REG_MCP.Bitmuster_B, (BITS.Bit1 << name - 1))) {
-                ergebnis=true;
-                } 
-        }
-        return ergebnis;
-    }
-
-    //% blockId="setLed"
-    //% block="switch %port | %zustand"
-    //% block.loc.de="schalte %port | %zustand"
-    //% zustand.shadow="toggleOnOff"
-    //% port.fieldEditor="gridpicker" port.fieldOptions.columns=4
-    //% weight=88
-    //% group="Ein- & Ausgang"
-
-    export function setLed(port: Ports, zustand: boolean): void {
-        let name:number=port
-        if (zustand) { //LEDs an
-            if (name > 0 && name < 9) { // Register A
-                // Bitweises oder
-                BitwertA = BitwertA | (BITS.Bit1 << name - 1)
-                MCP23017.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_A, BitwertA);
-            } else { // Register B
-                name = name - 8
-                BitwertB = BitwertB | (BITS.Bit1 << name - 1)
-                MCP23017.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_B, BitwertB);
-            }
-        } else { //   LEDs aus
-            if (name > 0 && name < 9) { // Register A
-                // Ist das betreffende Bit gesetzt? Dann löschen
-                if ((BitwertA & (BITS.Bit1 << name - 1)) == (BITS.Bit1 << name - 1)) {
-                    // Bitweises XOR ^
-                    BitwertA = BitwertA ^ (BITS.Bit1 << name - 1)
-                    MCP23017.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_A, BitwertA);
-                }
-            } else { // Register B
-                name = name - 8
-                if ((BitwertB & (BITS.Bit1 << name - 1)) == (BITS.Bit1 << name - 1)) {
-                    BitwertB = BitwertB ^ (BITS.Bit1 << name - 1)
-                    MCP23017.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_B, BitwertB);
-                }
-            }
-        }
-    }
-
-    export function writeRegister(addr: ADDRESS, reg: REG_MCP, value: number) {
-        pins.i2cWriteNumber(addr, reg * 256 + value, NumberFormat.UInt16BE)
-    }
-
-    export function ReadNotAnd(addr: ADDRESS, reg: REG_MCP, value: number): boolean {
-        return (!(MCP23017.readRegister(addr, reg) & value))
-    }
-
-    export function readRegister(addr: ADDRESS, reg: REG_MCP): number {
-        pins.i2cWriteNumber(addr, reg, NumberFormat.Int8LE);
-        return pins.i2cReadNumber(addr, NumberFormat.Int8LE)
-    }
+    
 }
