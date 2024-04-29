@@ -90,11 +90,11 @@ namespace HappyRobo {
         let name:number=port;
          if (name > 0 && name < 9) { // Register A Bit des Ports auf 0 setzen
             IOBitsA = (IOBitsA & (BITS.Alle-(BITS.Bit1 << name - 1)))
-            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_A, IOBitsA)
+            HappyRobo.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_A, IOBitsA)
         } else { // Register B
             name = name - 8
             IOBitsB = (IOBitsB & (BITS.Alle-(BITS.Bit1 << name - 1)))
-            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_B, IOBitsB)
+            HappyRobo.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_B, IOBitsB)
         }
         
     }
@@ -109,13 +109,13 @@ namespace HappyRobo {
        let name:number=port;
          if (name > 0 && name < 9) { // Register A Bit des Ports auf 1 setzen
             IOBitsA = (IOBitsA | (BITS.Bit1 << name - 1))
-            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_A, IOBitsA)
-            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.PullUp_Widerstaende_A, IOBitsA)
+            HappyRobo.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_A, IOBitsA)
+            HappyRobo.writeRegister(ADDRESS.A20, REG_MCP.PullUp_Widerstaende_A, IOBitsA)
         } else { // Register B
             name = name - 8
             IOBitsB = (IOBitsB | (BITS.Bit1 << name - 1))
-            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_B, IOBitsB)
-            MCP23017.writeRegister(ADDRESS.A20, REG_MCP.PullUp_Widerstaende_B, IOBitsB)
+            HappyRobo.writeRegister(ADDRESS.A20, REG_MCP.EinOderAusgabe_B, IOBitsB)
+            HappyRobo.writeRegister(ADDRESS.A20, REG_MCP.PullUp_Widerstaende_B, IOBitsB)
         }
     }
 
@@ -134,12 +134,12 @@ namespace HappyRobo {
         let name:number=port;
         let ergebnis:boolean=false;
         if (name > 0 && name < 9) { // Register A
-            if (MCP23017.ReadNotAnd(ADDRESS.A20, REG_MCP.Bitmuster_A, (BITS.Bit1 << name - 1))) {
+            if (HappyRobo.ReadNotAnd(ADDRESS.A20, REG_MCP.Bitmuster_A, (BITS.Bit1 << name - 1))) {
                 ergebnis=true;
                 } 
         } else { // Register B
                 name = name - 8
-                if (MCP23017.ReadNotAnd(ADDRESS.A20, REG_MCP.Bitmuster_B, (BITS.Bit1 << name - 1))) {
+                if (HappyRobo.ReadNotAnd(ADDRESS.A20, REG_MCP.Bitmuster_B, (BITS.Bit1 << name - 1))) {
                 ergebnis=true;
                 } 
         }
@@ -160,11 +160,11 @@ namespace HappyRobo {
             if (name > 0 && name < 9) { // Register A
                 // Bitweises oder
                 BitwertA = BitwertA | (BITS.Bit1 << name - 1)
-                MCP23017.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_A, BitwertA);
+                HappyRobo.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_A, BitwertA);
             } else { // Register B
                 name = name - 8
                 BitwertB = BitwertB | (BITS.Bit1 << name - 1)
-                MCP23017.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_B, BitwertB);
+                HappyRobo.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_B, BitwertB);
             }
         } else { //   LEDs aus
             if (name > 0 && name < 9) { // Register A
@@ -172,13 +172,13 @@ namespace HappyRobo {
                 if ((BitwertA & (BITS.Bit1 << name - 1)) == (BITS.Bit1 << name - 1)) {
                     // Bitweises XOR ^
                     BitwertA = BitwertA ^ (BITS.Bit1 << name - 1)
-                    MCP23017.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_A, BitwertA);
+                    HappyRobo.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_A, BitwertA);
                 }
             } else { // Register B
                 name = name - 8
                 if ((BitwertB & (BITS.Bit1 << name - 1)) == (BITS.Bit1 << name - 1)) {
                     BitwertB = BitwertB ^ (BITS.Bit1 << name - 1)
-                    MCP23017.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_B, BitwertB);
+                    HappyRobo.writeRegister(ADDRESS.A20, REG_MCP.Bitmuster_B, BitwertB);
                 }
             }
         }
@@ -223,123 +223,123 @@ namespace HappyRobo {
         isinitialized = true
     }
 
-    	let x = 0
-	let y = 0
-	let sl = 0
-	let sr = 0
+        let x = 0
+	    let y = 0
+	    let sl = 0
+	    let sr = 0
 
-	const hysterese = 10
+	    const hysterese = 10
 
-	radio.onDataPacketReceived(({ receivedString: name, receivedNumber: value }) => {
-	    if ((name == "X") || (name == "Y")) {
-		if (Math.abs(value) > hysterese) {
-		    sl = 0
-		    sr = 0
+        radio.onDataPacketReceived(({ receivedString: name, receivedNumber: value }) => {
+            if ((name == "X") || (name == "Y")) {
+            if (Math.abs(value) > hysterese) {
+                sl = 0
+                sr = 0
 
-		    if (name == "X") {
-			if (x == value) {
-			    return
-			}
-			x = value
-		    }
+                if (name == "X") {
+                if (x == value) {
+                    return
+                }
+                x = value
+                }
 
-		    if (name == "Y") {
-			if (y == value) {
-			    return
-			}
-			y = value
-		    }
+                if (name == "Y") {
+                if (y == value) {
+                    return
+                }
+                y = value
+                }
 
-		    if (y < 0) {//FW
-			if (x > 0) {//Q1
+                if (y < 0) {//FW
+                if (x > 0) {//Q1
 
-			    sl = 90 - (y - x / 2)
-			    sr = 90 + (y + x / 2)
-			} else {//Q2
+                    sl = 90 - (y - x / 2)
+                    sr = 90 + (y + x / 2)
+                } else {//Q2
 
-			    sl = 90 - (y - x / 2)
-			    sr = 90 + (y + x / 2)
-			}
-		    } else {//RW
-			if (x < 0) {//Q3
+                    sl = 90 - (y - x / 2)
+                    sr = 90 + (y + x / 2)
+                }
+                } else {//RW
+                if (x < 0) {//Q3
 
-			    sl = 90 - (y - x / 2)
-			    sr = 90 + (y + x / 2)
-			} else {//Q4
+                    sl = 90 - (y - x / 2)
+                    sr = 90 + (y + x / 2)
+                } else {//Q4
 
-			    sl = 90 - (y - x / 2)
-			    sr = 90 + (y + x / 2)
-			}
-		    }
+                    sl = 90 - (y - x / 2)
+                    sr = 90 + (y + x / 2)
+                }
+                }
 
-		    //check limits
-		    if (sl > 180) {
-			sl = 180
-		    }
-		    if (sr > 180) {
-			sr = 180
-		    }
-		    if (sl < 0) {
-			sl = 0
-		    }
-		    if (sr < 0) {
-			sr = 0
-		    }
+                //check limits
+                if (sl > 180) {
+                sl = 180
+                }
+                if (sr > 180) {
+                sr = 180
+                }
+                if (sl < 0) {
+                sl = 0
+                }
+                if (sr < 0) {
+                sr = 0
+                }
 
-		    pins.servoWritePin(AnalogPin.C16, sl)
-		    pins.servoWritePin(AnalogPin.C17, sr)
+                pins.servoWritePin(AnalogPin.C16, sl)
+                pins.servoWritePin(AnalogPin.C17, sr)
 
-		} else {
-		    //
-		    if (name == "X") {
-			x = 0
-		    }
-		    if (name == "Y") {
-			y = 0
-		    }
-		    if ((y == 0) && (x == 0)) {
-			pins.digitalWritePin(DigitalPin.C16, 0)
-			pins.digitalWritePin(DigitalPin.C17, 0)
-		    }
-		}
-
-
-	    }
-	})
+            } else {
+                //
+                if (name == "X") {
+                x = 0
+                }
+                if (name == "Y") {
+                y = 0
+                }
+                if ((y == 0) && (x == 0)) {
+                pins.digitalWritePin(DigitalPin.C16, 0)
+                pins.digitalWritePin(DigitalPin.C17, 0)
+                }
+            }
 
 
-    control.inBackground(() => {
-        while (!isinitialized) {
-            //wait for initialization
-		control.waitMicros(1000)
-		timeout += 1
-		if (timeout > 10000) {
-		    return
-		}
-        }
-        //return if initialized as receiver
-        if (btrole) {
-            return
-        }
-        //send xyz values in background
-        while (true) {
-            radio.sendValue("X", pins.map(
-                input.acceleration(Dimension.X),
-                -1024,
-                1023,
-                -90,
-                90
-            ));
-            radio.sendValue("Y", pins.map(
-                input.acceleration(Dimension.Y),
-                -1024,
-                1023,
-                -90,
-                90
-            ));
-            basic.pause(100)
-        }
-    })
+            }
+        })
+
+
+        control.inBackground(() => {
+            while (!isinitialized) {
+                //wait for initialization
+            control.waitMicros(1000)
+            timeout += 1
+            if (timeout > 10000) {
+                return
+            }
+            }
+            //return if initialized as receiver
+            if (btrole) {
+                return
+            }
+            //send xyz values in background
+            while (true) {
+                radio.sendValue("X", pins.map(
+                    input.acceleration(Dimension.X),
+                    -1024,
+                    1023,
+                    -90,
+                    90
+                ));
+                radio.sendValue("Y", pins.map(
+                    input.acceleration(Dimension.Y),
+                    -1024,
+                    1023,
+                    -90,
+                    90
+                ));
+                basic.pause(100)
+            }
+        })
 
     /**
      * Drives forwards. Call stop to stop
